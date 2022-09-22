@@ -1,7 +1,10 @@
+import './application.css'
+
 import axios from 'axios'
 
 import Layout from '../../views/layouts/application.svelte'
 
+import { Inertia } from '@inertiajs/inertia'
 import { createInertiaApp } from '@inertiajs/inertia-svelte'
 import { InertiaProgress } from '@inertiajs/progress'
 
@@ -19,5 +22,9 @@ createInertiaApp({
   },
   setup({ el, App, props }) {
     new App({ target: el, props })
-  },
+  }
+})
+
+window.addEventListener('message', function(event) {
+  if (event.data == 'logged_in') Inertia.reload()
 })

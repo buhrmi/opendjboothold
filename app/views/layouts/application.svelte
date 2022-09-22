@@ -1,4 +1,8 @@
 <script>
+  import { inertia } from '@inertiajs/inertia-svelte'
+
+  import user from '~/channels/user'
+  export let logged_in
   function login() {
     let url = "/session/new?provider=twitter"
     let height = 700
@@ -10,11 +14,37 @@
 </script>
 
 <header>
-  Open DJ Booth
+  <div class="brand">
+    Open DJ Booth
+  </div>
 
-  
-  <button on:click={login}>Log in</button>
-
+  {#if logged_in}
+    <a href="/session" class="btn logout" use:inertia={{method: 'delete'}}>Log out</a>
+  {:else}
+    <button class="primary btn" on:click={login}>Log in</button>
+  {/if}
 </header>
 
 <slot />
+
+<style>
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+  }
+  .brand {
+    padding: 1rem;
+  }
+  .logout {
+    background-color: #6e2e29;
+  }
+  .btn {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 1.5rem;
+  }
+  
+</style>

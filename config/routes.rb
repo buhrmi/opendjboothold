@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :booths
   resources :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -6,5 +7,5 @@ Rails.application.routes.draw do
   resource :session
   
   get '/auth/:provider/callback', to: 'sessions#create'
-  root "sessions#new"
+  root "booths#index"
 end

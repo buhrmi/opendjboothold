@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  use_inertia_instance_props
+
   rescue_from ActiveRecord::RecordInvalid do |exception|
     raise exception unless request.inertia?
     session[:errors] = exception.record.errors
@@ -12,7 +14,7 @@ class ApplicationController < ActionController::Base
 
   inertia_share do
     {
-      current_user_sid: current_user.try(:signed_id),
+      logged_in: current_user.present?,
       errors: session.delete(:errors),
       flash: flash.to_h
     }

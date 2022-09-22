@@ -7,7 +7,6 @@ class SessionsController < ApplicationController
   end
 
   def create
-    return redirect_to user_path(current_user), notice: 'You are already logged in' if current_user
     if request.env['omniauth.auth'].present?
       create_from_omniauth
     else
@@ -26,6 +25,7 @@ class SessionsController < ApplicationController
     identity = Identity.from_omniauth!(request.env["omniauth.auth"])
     session[:user_id] = identity.user.id
     flash[:notice] = "You have been logged in."
+
     render layout: false
   end
 
