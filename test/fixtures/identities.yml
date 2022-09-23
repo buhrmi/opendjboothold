@@ -6,8 +6,3 @@ one:
   provider_info: 
   user_id: 1
 
-two:
-  provider: MyString
-  provider_id: MyString
-  provider_info: 
-  user_id: 1

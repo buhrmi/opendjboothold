@@ -15,14 +15,16 @@
 
 <header>
   <a href="/" use:inertia>
-  <h1 class="brand">
+    <h1 class="brand">
       Open DJ Booth
     </h1>
   </a>
 
   {#if $user}
     <div class="user">
-      <img alt="Avatar" src="/blobs/{$user.avatar}" />
+      {#if $user.avatar}
+        <img alt="Avatar" src="/blobs/{$user.avatar}" />
+      {/if}
       <a href="/session" class="btn logout" use:inertia={{method: 'delete'}}>Log out</a>
     </div>
   {:else}
