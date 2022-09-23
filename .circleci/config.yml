@@ -35,17 +35,17 @@ jobs:
           - vendor/bundle
 
       - type: cache-restore
-        name: Restore yarn cache
-        key: cv-{{ checksum "yarn.lock" }}
+        name: Restore npm cache
+        key: cv-{{ checksum "package-lock.lock" }}
 
-      - run: yarn install --immutable
+      - run: npm install --immutable
 
         # Cache Dependencies
       - type: cache-save
-        name: Store yarn cache
-        key: cv-{{ checksum "yarn.lock" }}
+        name: Store npm cache
+        key: cv-{{ checksum "package-lock.lock" }}
         paths:
-          - ~/.cache/yarn
+          - ~/.cache/npm
 
       # Wait for DB
       - run: dockerize -wait tcp://localhost:5432 -timeout 1m
