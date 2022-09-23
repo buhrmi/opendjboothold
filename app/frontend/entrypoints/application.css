@@ -46,7 +46,7 @@ button,.btn {
 }
 
 .container {
-  margin-inline: 0;
+  margin-inline: auto;
 }
 
 .theme-dark {
