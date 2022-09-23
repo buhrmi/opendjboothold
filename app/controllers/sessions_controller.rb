@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
   def destroy
     session[:user_id] = nil
     flash[:notice] = "You have been logged out."
-    redirect_to root_url
+    redirect_back fallback_location: root_path
   end
 
   private
@@ -25,7 +25,6 @@ class SessionsController < ApplicationController
     identity = Identity.from_omniauth!(request.env["omniauth.auth"])
     session[:user_id] = identity.user.id
     flash[:notice] = "You have been logged in."
-
     render layout: false
   end
 

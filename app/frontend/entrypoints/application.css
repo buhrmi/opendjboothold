@@ -1,43 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300&family=Rubik+Dirt&display=swap');
+
+:root {
+  font-size: 20px;
+  --saturation-factor: 1;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  color: var(--text);
-  font-family: 'Roboto', sans-serif;
   font-size: 1rem;
   letter-spacing: 0.02em;
   border: none;
   outline: none;
 }
 
-a {
-  text-decoration: none;
-}
-
 body {
+  font-family: 'Oswald', sans-serif;
+  color: white;
   background: var(--background-primary);
 }
 
-button,.btn {
+h1, h2, h3, h4, h5 {
+  font-family: 'Rubik Dirt', cursive;
+}
 
+a {
+  text-decoration: none;
+  color: var(--primary);
+}
+
+
+button,.btn {
+  display: inline-block;
   cursor: pointer;
-  transition: all 0.1s ease;
+  padding: 0.5rem 1rem;
 }
 
 .primary {
-  background: var(--button-primary);
+  color: white;  
+  background: var(--primary);
 }
 .primary:hover {
-  background: var(--button-primary-hover);
-}
-:root {
-  --saturation-factor: 1;
+  background: var(--primary-hover);
 }
 
 .theme-dark {
   --background-primary: hsl(220,calc(var(--saturation-factor, 1)*7.7%), 12.9%);
-  --text: white;
-  --button-primary: hsl(235,calc(var(--saturation-factor, 1)*85.6%),64.7%);
-  --button-primary-hover: hsl(235,calc(var(--saturation-factor, 1)*85.6%),64.7%);
-  --button-primary-text: white;
+
+  --primary: hsl(235,calc(var(--saturation-factor, 1)*85.6%),64.7%);
+  --primary-hover: hsl(235,calc(var(--saturation-factor, 1)*85.6%),64.7%);
+
 }

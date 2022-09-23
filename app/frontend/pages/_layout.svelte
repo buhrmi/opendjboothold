@@ -9,14 +9,16 @@
     let width = 500
     var left = ( screen.width - width ) / 2
     var top = ( screen.height - height ) / 2
-    var newWindow = window.open( url, "Log in to Open DJ Booth", 'resizable = yes, width=' + width + ', height=' + height + ', top='+ top + ', left=' + left)
+    window.open( url, "Log in to Open DJ Booth", 'resizable = yes, width=' + width + ', height=' + height + ', top='+ top + ', left=' + left)
   }
 </script>
 
 <header>
-  <div class="brand">
-    Open DJ Booth
-  </div>
+  <a href="/" use:inertia>
+  <h1 class="brand">
+      Open DJ Booth
+    </h1>
+  </a>
 
   {#if $user}
     <div class="user">
@@ -35,12 +37,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 60px;
+    height: 48px;
   }
   .brand {
     padding: 1rem;
   }
+  .user {
+    display: flex;
+    height: 100%;
+    align-items: center;
+  }
   .logout {
+    color: white;
     background-color: #6e2e29;
   }
   .btn {
