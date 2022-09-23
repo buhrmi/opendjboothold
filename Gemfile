@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.1.2"
+ruby "3.0.2"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.4"
@@ -26,7 +26,7 @@ gem "omniauth"
 gem "omniauth-twitter"
 gem "omniauth-rails_csrf_protection"
 
-gem "inertia_rails", github: 'inertiajs/inertia-rails', ref: '24944eee54464d487bc9424c3071ee7e04ef099b'
+gem "inertia_rails"
 gem "vite_rails", "~> 3.0"
 
 

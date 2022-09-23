@@ -1,8 +1,8 @@
-[![CircleCI](https://circleci.com/gh/buhrmi/opendjbooth.svg?style=shield)](https://circleci.com/gh/buhrmi/opendjbooth)
-
 # Open DJ Booth
 
-An open-source project to carry on and honor the spirit of [plug.dj](https://plug.dj)
+[![CircleCI](https://circleci.com/gh/buhrmi/opendjbooth.svg?style=shield)](https://circleci.com/gh/buhrmi/opendjbooth)
+
+An open-source project in the spirit of [plug.dj](https://plug.dj)
 
 ### Support
 
