@@ -35,7 +35,7 @@ button,.btn {
 }
 
 .theme-dark {
-  --background-primary: hsl(220,calc(var(--saturation-factor, 1)*7.7%), 22.9%);
+  --background-primary: hsl(220,calc(var(--saturation-factor, 1)*7.7%), 12.9%);
   --text: white;
   --button-primary: hsl(235,calc(var(--saturation-factor, 1)*85.6%),64.7%);
   --button-primary-hover: hsl(235,calc(var(--saturation-factor, 1)*85.6%),64.7%);

@@ -1,8 +1,8 @@
 <script>
   import { inertia } from '@inertiajs/inertia-svelte'
 
-  import user from '~/channels/user'
-  export let logged_in
+  import user from '~/stores/user'
+
   function login() {
     let url = "/session/new?provider=twitter"
     let height = 700
@@ -18,8 +18,11 @@
     Open DJ Booth
   </div>
 
-  {#if logged_in}
-    <a href="/session" class="btn logout" use:inertia={{method: 'delete'}}>Log out</a>
+  {#if $user}
+    <div class="user">
+      <img alt="Avatar" src="/blobs/{$user.avatar}" />
+      <a href="/session" class="btn logout" use:inertia={{method: 'delete'}}>Log out</a>
+    </div>
   {:else}
     <button class="primary btn" on:click={login}>Log in</button>
   {/if}

@@ -1,1 +1,0 @@
-Booth.where(name: 'Test Booth').first_or_create

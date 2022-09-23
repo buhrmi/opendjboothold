@@ -1,7 +1,7 @@
 import { page } from '@inertiajs/inertia-svelte'
 import { writable } from 'svelte/store'
 
-import consumer from './consumer'
+import consumer from '~/lib/consumer'
 
 let subscription
 const store = writable(null)
