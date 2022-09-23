@@ -2,7 +2,6 @@
 
 :root {
   font-size: 20px;
-  --saturation-factor: 1;
 }
 
 * {
@@ -18,7 +17,7 @@
 body {
   font-family: 'Oswald', sans-serif;
   color: white;
-  background: var(--background-primary);
+  background: var(--background);
 }
 
 h1, h2, h3, h4, h5 {
@@ -50,9 +49,7 @@ button,.btn {
 }
 
 .theme-dark {
-  --background-primary: hsl(220,calc(var(--saturation-factor, 1)*7.7%), 12.9%);
-
-  --primary: hsl(235,calc(var(--saturation-factor, 1)*85.6%),64.7%);
-  --primary-hover: hsl(235,calc(var(--saturation-factor, 1)*85.6%),64.7%);
-
+  --background: #262627;
+  --primary: #5865f2;
+  --primary-hover: #5865f2;
 }

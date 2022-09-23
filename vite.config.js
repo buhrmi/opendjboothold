@@ -3,6 +3,8 @@ import RubyPlugin from 'vite-plugin-ruby'
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import Unocss from 'unocss/vite'
 import { presetUno } from 'unocss'
+import presetIcons from '@unocss/preset-icons'
+
 export default defineConfig({
   resolve: {
     dedupe: ['axios']
@@ -16,6 +18,11 @@ export default defineConfig({
     }),
     Unocss({
       presets: [
+        presetIcons({
+          extraProperties: {
+            'display': 'inline-block'
+          }
+        }),
         presetUno(),
         // ...custom presets
       ],
