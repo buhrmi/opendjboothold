@@ -36,14 +36,14 @@ jobs:
 
       - type: cache-restore
         name: Restore npm cache
-        key: cv-{{ checksum "package-lock.lock" }}
+        key: cv-{{ checksum "package-lock.json" }}
 
       - run: npm install --immutable
 
         # Cache Dependencies
       - type: cache-save
         name: Store npm cache
-        key: cv-{{ checksum "package-lock.lock" }}
+        key: cv-{{ checksum "package-lock.json" }}
         paths:
           - ~/.cache/npm
 
