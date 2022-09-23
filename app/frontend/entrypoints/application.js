@@ -1,4 +1,5 @@
 import './application.css'
+import 'virtual:uno.css'
 
 import axios from 'axios'
 
