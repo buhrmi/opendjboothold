@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
 
   inertia_share do
     {
+      youtube_api_key: Rails.application.credentials.dig(:youtube, :api_key),
       logged_in: current_user.present?,
       errors: session.delete(:errors),
       flash: flash.to_h

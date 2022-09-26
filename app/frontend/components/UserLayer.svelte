@@ -1,12 +1,28 @@
 <script>
-  import { inertia } from '@inertiajs/inertia-svelte'
+  import { inertia, page } from '@inertiajs/inertia-svelte'
+  
   import { slide } from 'svelte/transition'
   import Window from '~/components/Window.svelte'
   import user from '~/stores/user'
-
-  let showLoginWindow = true
-  let showPlaylists
   
+  let showLoginWindow = true
+  let showPlaylists = true
+  let query = ''
+  let searchResults = []
+  function autofocus(node) {
+    node.focus()
+  }
+
+  async function search() {
+    const url = `https://www.googleapis.com/youtube/v3/search?q=${query}&part=snippet&type=video&videoEmbeddable=true&maxResults=50&key=${$page.props.youtube_api_key}`
+    const res = await fetch(url).then(res => res.json())
+    const videoIds = res.items.map(item => item.id.videoId).join(',')
+    const videoUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoIds}&part=snippet,contentDetails&key=${$page.props.youtube_api_key}`
+    const videoRes = await fetch(videoUrl).then(res => res.json())
+    searchResults = videoRes.items
+    console.log(searchResults)
+  }
+
   function login(provider) {
     let url = `/session/new?provider=${provider}`
     let height = 820
@@ -43,12 +59,32 @@
 
 
 {#if showPlaylists}
-  <div class="fixed bottom-0 bg-black" transition:slide>
-    <button on:click={() => showPlaylists = false} class="bg-purple color-white flex items-center">
-      <span class="i-fe:arrow-down text-xl"></span>
-    </button>
-    <div class="p-4">
-      Here will be the playlists... Check back later.
+  <div class="fixed bottom-0 bg-dark" transition:slide>
+    <div class="flex w-full">
+      <button on:click={() => showPlaylists = false} class="bg-purple color-white flex items-center">
+        <span class="i-fe:arrow-down text-xl"></span>
+      </button>
+      <div class="search bg-black grow">
+        <input use:autofocus bind:value={query} on:change={search} class="w-full h-full px-2" placeholder="Search for songs on YouTube" />
+      </div>
+    </div>
+    <div class="flex h-500px">
+      <div class="p-4 ">
+        Here will be the playlists... Check back later.
+      </div>
+      <div class="entries overflow-y-scroll">
+        {#each searchResults as result}
+          <div class="flex">
+            <div class="thumbnail">
+              <img class="w-24" src={result.snippet.thumbnails.medium.url} />
+            </div>
+            <div class="info">
+              <div class="title">{result.snippet.title}</div>
+              <div class="channel">{result.snippet.channelTitle}</div>
+            </div>
+          </div>
+        {/each}
+      </div>
     </div>
   </div>
 {/if}

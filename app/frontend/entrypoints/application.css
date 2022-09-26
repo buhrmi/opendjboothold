@@ -9,13 +9,13 @@
   padding: 0;
   box-sizing: border-box;
   font-size: 1rem;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
   border: none;
   outline: none;
+  font-family: 'Oswald', sans-serif;
 }
 
 body {
-  font-family: 'Oswald', sans-serif;
   color: white;
   background: var(--background);
 }
@@ -34,8 +34,10 @@ a {
   text-decoration: none;
   color: var(--primary);
 }
-
-
+input,select,textarea {
+  background: none;
+  color: white;
+}
 button,.btn {
   display: inline-block;
   cursor: pointer;

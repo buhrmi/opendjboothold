@@ -14,6 +14,9 @@ export default defineConfig({
     svelte({
       experimental: {
         prebundleSvelteLibraries: true
+      },
+      hot: {
+        preserveLocalState: true
       }
     }),
     Unocss({
