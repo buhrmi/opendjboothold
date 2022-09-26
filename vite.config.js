@@ -20,7 +20,8 @@ export default defineConfig({
       presets: [
         presetIcons({
           extraProperties: {
-            'display': 'inline-block'
+            'display': 'inline-block',
+            'vertical-align': 'middle'
           }
         }),
         presetUno(),

@@ -24,6 +24,8 @@ gem "jbuilder"
 
 gem "omniauth"
 gem "omniauth-twitter"
+gem 'omniauth-spotify'
+gem 'omniauth-discord'
 gem "omniauth-rails_csrf_protection"
 
 gem "inertia_rails"

@@ -1,6 +1,5 @@
 <script>
   import { inertia } from '@inertiajs/inertia-svelte'
-
   import UserLayer from '~/components/UserLayer.svelte'
 </script>
 
@@ -10,8 +9,6 @@
       Open DJ Booth
     </h1>
   </a>
-
-  
 </header>
 
 <UserLayer />
