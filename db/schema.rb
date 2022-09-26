@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_22_151751) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_26_141403) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -45,7 +45,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_22_151751) do
     t.integer "owner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "track_id"
+    t.integer "dj_id"
+    t.datetime "start_time", precision: nil
+    t.index ["dj_id"], name: "index_booths_on_dj_id"
     t.index ["owner_id"], name: "index_booths_on_owner_id"
+    t.index ["track_id"], name: "index_booths_on_track_id"
   end
 
   create_table "identities", force: :cascade do |t|
@@ -57,6 +62,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_22_151751) do
     t.datetime "updated_at", null: false
     t.index ["provider", "provider_id"], name: "index_identities_on_provider_and_provider_id", unique: true
     t.index ["user_id"], name: "index_identities_on_user_id"
+  end
+
+  create_table "tracks", force: :cascade do |t|
+    t.string "title"
+    t.string "uploader"
+    t.integer "duration"
+    t.string "service"
+    t.string "service_id"
+    t.string "thumbnail"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["service", "service_id"], name: "index_tracks_on_service_and_service_id", unique: true
   end
 
   create_table "users", force: :cascade do |t|

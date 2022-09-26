@@ -8,14 +8,16 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-size: 1rem;
   letter-spacing: 0.03em;
   border: none;
   outline: none;
-  font-family: 'Oswald', sans-serif;
+  font-size: inherit;
+  font-family: inherit;
 }
 
 body {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1rem;
   color: white;
   background: var(--background);
 }

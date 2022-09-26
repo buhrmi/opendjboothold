@@ -1,7 +1,8 @@
 <script>
-  import { inertia, page } from '@inertiajs/inertia-svelte'
+  import { inertia } from '@inertiajs/inertia-svelte'
   
   import { slide } from 'svelte/transition'
+  import { debounce } from '~/lib/utils'
   import Window from '~/components/Window.svelte'
   import user from '~/stores/user'
   
@@ -14,14 +15,10 @@
   }
 
   async function search() {
-    const url = `https://www.googleapis.com/youtube/v3/search?q=${query}&part=snippet&type=video&videoEmbeddable=true&maxResults=50&key=${$page.props.youtube_api_key}`
-    const res = await fetch(url).then(res => res.json())
-    const videoIds = res.items.map(item => item.id.videoId).join(',')
-    const videoUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoIds}&part=snippet,contentDetails&key=${$page.props.youtube_api_key}`
-    const videoRes = await fetch(videoUrl).then(res => res.json())
-    searchResults = videoRes.items
-    console.log(searchResults)
+    searchResults = await fetch('/api/tracks?service=youtube&q=' + query).then(res => res.json())
   }
+  search = debounce(search, 750)
+
 
   function login(provider) {
     let url = `/session/new?provider=${provider}`
@@ -65,26 +62,25 @@
         <span class="i-fe:arrow-down text-xl"></span>
       </button>
       <div class="search bg-black grow">
-        <input use:autofocus bind:value={query} on:change={search} class="w-full h-full px-2" placeholder="Search for songs on YouTube" />
+        <input use:autofocus bind:value={query} on:keyup={search} on:change={search} class="w-full h-full px-2" placeholder="Search for songs on YouTube" />
       </div>
     </div>
     <div class="flex h-500px">
       <div class="p-4 ">
         Here will be the playlists... Check back later.
       </div>
-      <div class="entries overflow-y-scroll">
+      <table class="overflow-y-scroll text-sm">
         {#each searchResults as result}
-          <div class="flex">
-            <div class="thumbnail">
-              <img class="w-24" src={result.snippet.thumbnails.medium.url} />
-            </div>
-            <div class="info">
-              <div class="title">{result.snippet.title}</div>
-              <div class="channel">{result.snippet.channelTitle}</div>
-            </div>
-          </div>
+          <tr>
+            <td>
+              <img class="w-24" src={result.thumbnail} />
+            </td>
+            <td class="channel">{result.uploader}</td>
+            <td class="title">{result.title}</td>
+            <td class="duration">{result.duration}</td>
+          </tr>
         {/each}
-      </div>
+      </table>
     </div>
   </div>
 {/if}
