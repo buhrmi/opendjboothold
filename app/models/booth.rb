@@ -18,5 +18,13 @@ class Booth < ApplicationRecord
       track: track&.for_transmission
     }
   end
+
+  def next!
+    
+    self.dj = User.first
+    self.track = self.dj.track
+    self.start_time = Time.now
+    self.save
+  end
   
 end

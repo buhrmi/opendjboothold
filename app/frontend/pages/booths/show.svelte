@@ -34,7 +34,7 @@
       },
       received(data) {
         console.log(data)
-        // booth = Object.assign(booth,data)
+        booth = Object.assign(booth,data)
       }
     })
   })

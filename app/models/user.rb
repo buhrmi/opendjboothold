@@ -18,4 +18,9 @@ class User < ApplicationRecord
     }
   end
 
+  def track
+    # TODO: get first track from active playlist
+    Track.all.sample
+  end
+
 end

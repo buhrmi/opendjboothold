@@ -11,11 +11,10 @@ namespace :background do
         end
 
         # set a random track if the current track is over
-        if booth.start_time + booth.track.duration.seconds <= Time.now
-          booth.track = Track.all.sample
-          booth.start_time = Time.now
-          booth.save
+        if booth.start_time + booth.track.duration.seconds < Time.now
+          booth.next!
         end
+
 
       end
       
