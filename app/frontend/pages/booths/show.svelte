@@ -6,9 +6,10 @@
   export let booth
   
   let elapsed = booth.elapsed
+  let startedAt = new Date().getTime() 
 
   function update() {
-    elapsed += 1
+    elapsed = booth.elapsed + Math.round((new Date().getTime() - startedAt) / 1000)
   }
   
   setInterval(update, 1000)
@@ -68,8 +69,9 @@
       received(data) {
         if (data.action == 'update') booth = Object.assign(booth, data.changes)
         if (data.action == 'new_track') {
-          elapsed = 0
           booth.track = data.track
+          booth.elapsed = elapsed = 0
+          startedAt = new Date().getTime()
           ytPlayer.loadVideoById(data.track.service_id)
           ytPlayer.seekTo(0)
         }
