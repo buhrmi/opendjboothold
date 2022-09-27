@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/buhrmi/opendjbooth.svg?style=shield)](https://circleci.com/gh/buhrmi/opendjbooth)
 
-An open-source project in the spirit of [plug.dj](https://plug.dj)
+An open-source project in the spirit of [plug.dj](https://plug.dj). You can try it out at https://www.opendjbooth.com.
 
 ### Support
 
