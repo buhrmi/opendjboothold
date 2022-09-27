@@ -20,6 +20,10 @@ class Booth < ApplicationRecord
     Time.now - start_time
   end
 
+  def track_finished?
+    !track || elapsed >= track.duration
+  end
+
   def broadcast_update
     BoothChannel.broadcast_to(self, action: 'update', changes: previous_changes.map { |k, v| [k, v[1]] }.to_h)
     if previous_changes[:track_id]
