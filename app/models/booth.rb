@@ -17,7 +17,7 @@ class Booth < ApplicationRecord
   end
 
   def elapsed
-    Time.now - start_time
+    start_time && Time.now - start_time || 0
   end
 
   def track_finished?
