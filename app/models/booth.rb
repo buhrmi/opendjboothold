@@ -45,7 +45,7 @@ class Booth < ApplicationRecord
       self.track = self.dj.track
       self.start_time = Time.now
       self.save
-      next_list.touch
+      next_list.touch # this will update "updated_at" and move it to the end of the list
     else
       self.dj = nil
       self.track = nil

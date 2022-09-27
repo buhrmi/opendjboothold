@@ -17,6 +17,10 @@ class BoothChannel < ApplicationCable::Channel
     @booth.next!
   end
 
+  def send_message
+    broadcast_to @booth, action: 'message', message: params[:message]
+  end
+
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
   end

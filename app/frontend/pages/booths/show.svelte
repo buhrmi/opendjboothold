@@ -87,34 +87,39 @@
   <title>{booth.name} - Open DJ Booth</title>
 </svelte:head>
 
-{booth.name}
+<header class="bg-dark flex gap-4">
+  <div class="p-2">
+    {booth.name}
+  </div>
 
-<div class="div">
-{#if booth.track}
-  Current Track: {booth.track.title}<br>
-  Remaining: {secondsToHuman(booth.track.duration - elapsed)} / {secondsToHuman(booth.track.duration)}
-{/if}
+  {#if booth.track}
+    <div class="p-2">
+      {booth.track.title}
+    </div>
+    <div class="p-2">
+      {secondsToHuman(booth.track.duration - elapsed)}
+    </div>
+  {/if}
+</header>
 
-</div>
-
-
-<div id="ytplayer"></div>
-    <!-- <iframe id="ytplayer" width="560" height="315" src="https://www.youtube.com/embed/{booth.track.service_id}?autoplay=1&enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
-
-
+<div class="flex flex-col items-center justify-center">
+  <div id="ytplayer"></div>
+  
+  
 <h3>Waitlist</h3>
 {#each booth.waitlists as waitlist}
-  {waitlist.user.display_name}<br>
+{waitlist.user.display_name}<br>
 {/each}
 
 {#if $user}
-  {#if booth.waitlists.find(w => w.user.id == $user.id)}
-  <button on:click={leaveWaitlist}>Leave Waitlist</button>
-  {:else}
-    <button on:click={joinWaitlist}>Join Waitlist</button>
-  {/if}
+{#if booth.waitlists.find(w => w.user.id == $user.id)}
+<button on:click={leaveWaitlist}>Leave Waitlist</button>
+{:else}
+<button on:click={joinWaitlist}>Join Waitlist</button>
+{/if}
 {/if}
 
 <h3>Moderator Stuff</h3>
 <button on:click={skipTrack}>Skip Track</button>
 
+</div>
