@@ -6,14 +6,8 @@ class Waitlist < ApplicationRecord
 
   validates :user_id, uniqueness: { scope: :booth_id }
 
-  after_create_commit do
-    BoothChannel.broadcast_to(booth, action: 'update', changes: { waitlists: booth.waitlists.map(&:transmission) })
-  end
-
-  after_destroy_commit do
-    BoothChannel.broadcast_to(booth, action: 'update', changes: { waitlists: booth.reload.waitlists.map(&:transmission) })
-  end
-
+  after_commit -> { booth.reload.broadcast_waitlists }
+  
 
   def transmission
     {

@@ -31,6 +31,10 @@ class Booth < ApplicationRecord
     end
   end
 
+  def broadcast_waitlists
+    BoothChannel.broadcast_to(self, action: 'update', changes: { waitlists: waitlists.map(&:transmission) })
+  end
+
   def transmission
     {
       id: id,
