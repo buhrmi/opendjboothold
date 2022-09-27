@@ -1,18 +1,16 @@
 <script>
   import { onDestroy, onMount } from 'svelte';
   import consumer from '~/lib/actioncable';
-  
+  import user from '~/stores/user';
+  import YTLoader from 'youtube-iframe'
   export let booth
-
-  let elapsedSeconds = 0
-  let remaining = 0
+  
+  let elapsed = booth.elapsed
 
   function update() {
-    if (!booth.track) return
-    elapsedSeconds = Math.floor((Date.now() - Date.parse(booth.start_time)) / 1000)
-    remaining = booth.track.duration - elapsedSeconds
+    elapsed += 1
   }
-  update()
+  
   setInterval(update, 1000)
 
   function secondsToHuman(seconds) {
@@ -21,20 +19,60 @@
     return `${minutes}:${seconds.toString().padStart(2, '0')}`
   }
 
-  let embedStartTime = elapsedSeconds
+  function joinWaitlist() {
+    subscription.perform('join_waitlist')
+  }
+  function leaveWaitlist() {
+    subscription.perform('leave_waitlist')
+  }
+  function skipTrack() {
+    subscription.perform('skip_track')
+  }
+
 
   let subscription
+  let ytPlayer
   onMount(async () => {
+    YTLoader.load(function(YT) {
+      ytPlayer = new YT.Player('ytplayer', {
+        height: '390',
+        width: '640',
+        videoId: booth.track?.service_id,
+        playerVars: {
+          autoplay: 1,
+          controls: 0,
+          disablekb: 1,
+          enablejsapi: 1,
+          fs: 0,
+          iv_load_policy: 3,
+          modestbranding: 1,
+          playsinline: 1,
+          rel: 0,
+          showinfo: 0,
+          start: elapsed
+        },
+        events: {
+          // 'onReady': onPlayerReady,
+          onStateChange: function(event) {
+            // set player to elapsed time
+            if (event.data == YT.PlayerState.PLAYING) {
+              if (ytPlayer.getCurrentTime() < elapsed) {
+                ytPlayer.seekTo(elapsed)
+              }
+            }
+          }
+        }
+      });
+    })
     subscription = consumer.subscriptions.create({ channel: 'BoothChannel', id: booth.id }, {
-      connected() {
-        console.log('connected')
-      },
-      disconnected() {
-        console.log('disconnected')
-      },
       received(data) {
-        console.log(data)
-        booth = Object.assign(booth,data)
+        if (data.action == 'update') booth = Object.assign(booth, data.changes)
+        if (data.action == 'new_track') {
+          elapsed = 0
+          booth.track = data.track
+          ytPlayer.loadVideoById(data.track.service_id)
+          ytPlayer.seekTo(0)
+        }
       }
     })
   })
@@ -43,7 +81,6 @@
     consumer.subscriptions.remove(subscription)
     subscription = null
   })
-  
 </script>
 
 <svelte:head>
@@ -55,13 +92,29 @@
 <div class="div">
 {#if booth.track}
   Current Track: {booth.track.title}<br>
-  Remaining: {secondsToHuman(remaining)} / {secondsToHuman(booth.track.duration)}
+  Remaining: {secondsToHuman(booth.track.duration - elapsed)} / {secondsToHuman(booth.track.duration)}
 {/if}
 
 </div>
 
-{#if booth.track}
-  {#if booth.track.service == 'youtube'}
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/{booth.track.service_id}?autoplay=1&mute=1&start={embedStartTime}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<div id="ytplayer"></div>
+    <!-- <iframe id="ytplayer" width="560" height="315" src="https://www.youtube.com/embed/{booth.track.service_id}?autoplay=1&enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+
+
+<h3>Waitlist</h3>
+{#each booth.waitlists as waitlist}
+  {waitlist.user.display_name}<br>
+{/each}
+
+{#if $user}
+  {#if booth.waitlists.find(w => w.user.id == $user.id)}
+  <button on:click={leaveWaitlist}>Leave Waitlist</button>
+  {:else}
+    <button on:click={joinWaitlist}>Join Waitlist</button>
   {/if}
 {/if}
+
+<h3>Moderator Stuff</h3>
+<button on:click={skipTrack}>Skip Track</button>
+

@@ -6,8 +6,8 @@
   import Window from '~/components/Window.svelte'
   import user from '~/stores/user'
   
-  let showLoginWindow = true
-  let showPlaylists = true
+  let showLoginWindow
+  let showPlaylists
   let query = ''
   let searchResults = []
   function autofocus(node) {

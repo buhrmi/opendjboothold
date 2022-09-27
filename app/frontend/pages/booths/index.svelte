@@ -11,6 +11,13 @@
   })
 </script>
 
+<header>
+  <a href="/" use:inertia>
+    <h1 class="brand">
+      Open DJ Booth
+    </h1>
+  </a>
+</header>
 
 <div class="container text-center">
   <div class="inline-block">

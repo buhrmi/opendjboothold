@@ -1,7 +1,7 @@
 class Track < ApplicationRecord
   has_many :booths  
 
-  def for_transmission
+  def transmission
     {
       id: id,
       title: title,

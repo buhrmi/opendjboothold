@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_26_141403) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_27_092607) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -85,6 +85,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_141403) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["name"], name: "index_users_on_name", unique: true
+  end
+
+  create_table "waitlists", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "booth_id"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["booth_id"], name: "index_waitlists_on_booth_id"
+    t.index ["created_at"], name: "index_waitlists_on_created_at"
+    t.index ["user_id"], name: "index_waitlists_on_user_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

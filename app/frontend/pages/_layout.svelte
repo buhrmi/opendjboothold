@@ -3,13 +3,6 @@
   import UserLayer from '~/components/UserLayer.svelte'
 </script>
 
-<header>
-  <a href="/" use:inertia>
-    <h1 class="brand">
-      Open DJ Booth
-    </h1>
-  </a>
-</header>
 
 <UserLayer />
 
