@@ -1,5 +1,5 @@
-heroku-community/apt
-zoras/libvips
+heroku/apt
+brandoncc/vips
 heroku/nodejs
 heroku/ruby
 heroku/activestorage-preview
