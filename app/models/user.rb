@@ -22,7 +22,7 @@ class User < ApplicationRecord
 
   def track
     # TODO: get first track from active playlist
-    Track.where('duration < 60').sample
+    Track.all.sample
   end
 
 end
