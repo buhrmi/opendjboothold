@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_27_092607) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_28_075313) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -64,6 +64,32 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_27_092607) do
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
+  create_table "playlist_tracks", force: :cascade do |t|
+    t.integer "playlist_id"
+    t.integer "track_id"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "playlists", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "plays", force: :cascade do |t|
+    t.integer "track_id"
+    t.integer "booth_id"
+    t.integer "user_id"
+    t.integer "woots_count"
+    t.integer "grabs_count"
+    t.integer "mehs_count"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "tracks", force: :cascade do |t|
     t.string "title"
     t.string "uploader"
@@ -83,6 +109,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_27_092607) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "active_playlist_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["name"], name: "index_users_on_name", unique: true
   end

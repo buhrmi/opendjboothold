@@ -2,7 +2,6 @@ class BoothChannel < ApplicationCable::Channel
   def subscribed
     @booth = Booth.find(params[:id])
     stream_for @booth
-    transmit @booth.transmission(current_user)
   end
 
   def join_waitlist

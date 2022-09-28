@@ -1,10 +1,13 @@
 <script>
   import { onDestroy, onMount } from 'svelte';
   import consumer from '~/lib/actioncable';
-  import user from '~/stores/user';
+  import { secondsToHuman } from '~/lib/utils';
+  import getStore from '~/stores/user';
   import YTLoader from 'youtube-iframe'
   export let booth
   
+  const user = getStore('user')
+
   let elapsed = booth.elapsed
   let startedAt = new Date().getTime() 
 
@@ -14,11 +17,6 @@
   
   setInterval(update, 1000)
 
-  function secondsToHuman(seconds) {
-    let minutes = Math.floor(seconds / 60)
-    seconds = seconds % 60
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`
-  }
 
   function joinWaitlist() {
     subscription.perform('join_waitlist')

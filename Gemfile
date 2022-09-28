@@ -31,6 +31,7 @@ gem "omniauth-rails_csrf_protection"
 gem "inertia_rails"
 gem "vite_rails", "~> 3.0"
 
+gem "acts_as_list"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
