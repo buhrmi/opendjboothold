@@ -26,9 +26,8 @@ class Booth < ApplicationRecord
 
   def broadcast_update
     BoothChannel.broadcast_to(self, action: 'update', changes: previous_changes.map { |k, v| [k, v[1]] }.to_h)
-    if previous_changes[:track_id]
-      BoothChannel.broadcast_to(self, action: 'new_track',  track: track&.transmission )
-    end
+    BoothChannel.broadcast_to(self, action: 'update',  changes: {dj: dj&.transmission}) if previous_changes[:dj_id]
+    BoothChannel.broadcast_to(self, action: 'new_track',  track: track&.transmission) if previous_changes[:track_id]
   end
 
   def broadcast_waitlists

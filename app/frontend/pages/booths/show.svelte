@@ -65,7 +65,10 @@
     })
     subscription = consumer.subscriptions.create({ channel: 'BoothChannel', id: booth.id }, {
       received(data) {
-        if (data.action == 'update') booth = Object.assign(booth, data.changes)
+        if (data.action == 'update') {
+          console.log(data)
+          booth = Object.assign(booth, data.changes)
+        }
         if (data.action == 'new_track') {
           booth.track = data.track
           booth.elapsed = elapsed = 0
@@ -105,6 +108,10 @@
 <div class="flex flex-col items-center justify-center">
   <div id="ytplayer"></div>
   
+  Current DJ: {booth.dj?.display_name}
+  {#if $user && booth.dj?.id == $user.id}
+    <button on:click={skipTrack}>Leave the booth</button>
+  {/if}
   
 <h3>Waitlist</h3>
 {#each booth.waitlists as waitlist}

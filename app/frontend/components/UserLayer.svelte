@@ -62,14 +62,9 @@
 
 
 <div class="fixed bottom-0 w-full bg-black/20 flex justify-between">
-  <!-- {#if !showPlaylists} -->
-    
   <button on:click={() => showPlaylists = true} class="bg-purple color-white flex items-center">
     <span class="i-fe:list-bullet text-xl"></span>
   </button>
-
-  <!-- {/if} -->
-  
   <div class="flex">
     {#if $user}
       {#if $user.avatar}
@@ -81,7 +76,6 @@
     {/if}
   </div>
 </div>
-
 
 
 {#if showPlaylists && $user}
