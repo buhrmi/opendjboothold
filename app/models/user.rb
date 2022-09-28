@@ -32,7 +32,7 @@ class User < ApplicationRecord
   end
 
   def track
-    active_playlist&.tracks.first
+    active_playlist.tracks.first if active_playlist
   end
 
   def create_default_playlist

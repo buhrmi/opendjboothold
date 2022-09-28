@@ -1,5 +1,5 @@
 class Booth < ApplicationRecord
-  belongs_to :track, optional: true
+  belongs_to :track, class_name: 'PlaylistTrack', optional: true
   belongs_to :dj, class_name: "User", optional: true
 
   has_many :waitlists, dependent: :destroy
@@ -47,10 +47,14 @@ class Booth < ApplicationRecord
   end
 
   def next!
+    reload
     next_list = waitlists.first
+    
+    self.track&.move_to_bottom
+    
     if next_list
       self.dj = next_list.user
-      self.track = self.dj.track
+      self.track = self.dj.active_playlist&.playlist_tracks&.first
       self.start_time = Time.now
       self.save
       next_list.touch # this will update "updated_at" and move it to the end of the list

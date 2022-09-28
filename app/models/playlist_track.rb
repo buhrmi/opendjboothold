@@ -8,4 +8,6 @@ class PlaylistTrack < ApplicationRecord
 
   after_commit -> { playlist.broadcast }
 
+  delegate :transmission, to: :track
+  delegate :duration, to: :track
 end
