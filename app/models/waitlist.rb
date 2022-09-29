@@ -9,10 +9,10 @@ class Waitlist < ApplicationRecord
   after_commit -> { booth.reload.broadcast_waitlists }
   
 
-  def transmission
+  def hash
     {
       id: id,
-      user: user.transmission
+      user: user.hash
     }
   end
 end

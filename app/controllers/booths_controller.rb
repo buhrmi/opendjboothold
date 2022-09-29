@@ -7,7 +7,7 @@ class BoothsController < ApplicationController
   end
 
   def show
-    @booth = Booth.find(params[:id]).transmission
+    @booth = Booth.find(params[:id]).hash
   end
 
   def create

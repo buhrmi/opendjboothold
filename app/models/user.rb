@@ -15,7 +15,7 @@ class User < ApplicationRecord
   before_create :create_default_playlist
   after_commit :broadcast
 
-  def transmission(receiver = nil)
+  def hash(receiver = nil)
     {
       id: id,
       name: name,
@@ -28,7 +28,7 @@ class User < ApplicationRecord
   end
 
   def broadcast
-    UserChannel.broadcast_to self, store: 'user', changes: transmission(self)
+    UserChannel.broadcast_to self, store: 'user', changes: hash(self)
   end
 
   def track

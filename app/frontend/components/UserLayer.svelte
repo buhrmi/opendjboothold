@@ -172,4 +172,3 @@
     <p class="mt-4">Log in with email is still being worked on... If you don't want to connect with another service, please check back later.</p>
   </Window>
 {/if}
-

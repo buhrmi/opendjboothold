@@ -15,14 +15,14 @@ class Playlist < ApplicationRecord
   after_destroy_commit -> { UserChannel.broadcast_to user, store: 'user', changes: {playlists: user.playlists}}
 
   def broadcast
-    UserChannel.broadcast_to user, store: "#{self.class.name.parameterize}_#{id}", changes: transmission
+    UserChannel.broadcast_to user, store: "#{self.class.name.parameterize}_#{id}", changes: hash
   end
 
-  def transmission
+  def hash
     {
       id: id,
       name: name,
-      tracks: tracks.map(&:transmission)
+      tracks: tracks.map(&:hash)
     }
   end
 

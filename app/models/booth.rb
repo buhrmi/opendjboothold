@@ -26,22 +26,22 @@ class Booth < ApplicationRecord
 
   def broadcast_update
     BoothChannel.broadcast_to(self, action: 'update', changes: previous_changes.map { |k, v| [k, v[1]] }.to_h)
-    BoothChannel.broadcast_to(self, action: 'update',  changes: {dj: dj&.transmission}) if previous_changes[:dj_id]
-    BoothChannel.broadcast_to(self, action: 'new_track',  track: track&.transmission) if previous_changes[:track_id]
+    BoothChannel.broadcast_to(self, action: 'update',  changes: {dj: dj&.hash}) if previous_changes[:dj_id]
+    BoothChannel.broadcast_to(self, action: 'new_track',  track: track&.hash) if previous_changes[:track_id]
   end
 
   def broadcast_waitlists
-    BoothChannel.broadcast_to(self, action: 'update', changes: { waitlists: waitlists.map(&:transmission) })
+    BoothChannel.broadcast_to(self, action: 'update', changes: { waitlists: waitlists.map(&:hash) })
   end
 
-  def transmission
+  def hash
     {
       id: id,
       name: name,
       elapsed: elapsed.to_i,
-      track: track&.transmission,
-      dj: dj&.transmission,
-      waitlists: waitlists.map(&:transmission)
+      track: track&.hash,
+      dj: dj&.hash,
+      waitlists: waitlists.map(&:hash)
     }
   end
 

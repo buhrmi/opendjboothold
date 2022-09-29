@@ -100,7 +100,7 @@
       {booth.track.title}
     </div>
     <div class="p-2">
-      {secondsToHuman(booth.track.duration - elapsed)}
+      <span class="i-bi:clock relative -top-2px"></span> {secondsToHuman(booth.track.duration - elapsed)}
     </div>
   {/if}
 </header>
@@ -119,11 +119,11 @@
 {/each}
 
 {#if $user}
-{#if booth.waitlists.find(w => w.user.id == $user.id)}
-<button on:click={leaveWaitlist}>Leave Waitlist</button>
-{:else}
-<button on:click={joinWaitlist}>Join Waitlist</button>
-{/if}
+  {#if booth.waitlists.find(w => w.user.id == $user.id)}
+   <button on:click={leaveWaitlist}>Leave Waitlist</button>
+  {:else}
+   <button on:click={joinWaitlist}>Join Waitlist</button>
+  {/if}
 {/if}
 
 <h3>Moderator Stuff</h3>

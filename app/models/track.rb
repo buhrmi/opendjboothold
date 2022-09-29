@@ -3,7 +3,7 @@ class Track < ApplicationRecord
   has_many :playlists, through: :playlist_tracks
   has_many :plays, dependent: :destroy
 
-  def transmission
+  def hash
     {
       id: id,
       title: title,
