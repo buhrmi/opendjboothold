@@ -15,7 +15,7 @@ class User < ApplicationRecord
   before_create :create_default_playlist
   after_commit :broadcast
 
-  def hash(receiver = nil)
+  def as_prop(receiver = nil)
     {
       id: id,
       name: name,
@@ -32,7 +32,7 @@ class User < ApplicationRecord
   end
 
   def track
-    active_playlist.tracks.first if active_playlist
+    active_playlist.playlist_tracks.first if active_playlist
   end
 
   def create_default_playlist

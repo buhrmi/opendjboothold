@@ -7,7 +7,7 @@ class BoothsController < ApplicationController
   end
 
   def show
-    @booth = Booth.find(params[:id]).hash
+    @booth = Booth.find(params[:id]).as_prop
   end
 
   def create

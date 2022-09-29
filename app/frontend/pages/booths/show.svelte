@@ -73,7 +73,7 @@
           booth.track = data.track
           booth.elapsed = elapsed = 0
           startedAt = new Date().getTime()
-          ytPlayer.loadVideoById(data.track.service_id)
+          ytPlayer.loadVideoById(data.track?.service_id)
           ytPlayer.seekTo(0)
         }
       }

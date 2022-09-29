@@ -18,11 +18,11 @@ class Playlist < ApplicationRecord
     UserChannel.broadcast_to user, store: "#{self.class.name.parameterize}_#{id}", changes: hash
   end
 
-  def hash
+  def as_prop
     {
       id: id,
       name: name,
-      tracks: tracks.map(&:hash)
+      tracks: tracks.map(&:as_prop)
     }
   end
 

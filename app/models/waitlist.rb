@@ -9,10 +9,10 @@ class Waitlist < ApplicationRecord
   after_commit -> { booth.reload.broadcast_waitlists }
   
 
-  def hash
+  def as_prop
     {
       id: id,
-      user: user.hash
+      user: user.as_prop
     }
   end
 end

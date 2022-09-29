@@ -26,22 +26,22 @@ class Booth < ApplicationRecord
 
   def broadcast_update
     BoothChannel.broadcast_to(self, action: 'update', changes: previous_changes.map { |k, v| [k, v[1]] }.to_h)
-    BoothChannel.broadcast_to(self, action: 'update',  changes: {dj: dj&.hash}) if previous_changes[:dj_id]
-    BoothChannel.broadcast_to(self, action: 'new_track',  track: track&.hash) if previous_changes[:track_id]
+    BoothChannel.broadcast_to(self, action: 'update',  changes: {dj: dj&.as_prop}) if previous_changes[:dj_id]
+    BoothChannel.broadcast_to(self, action: 'new_track',  track: track&.as_prop) if previous_changes[:track_id]
   end
 
   def broadcast_waitlists
-    BoothChannel.broadcast_to(self, action: 'update', changes: { waitlists: waitlists.map(&:hash) })
+    BoothChannel.broadcast_to(self, action: 'update', changes: { waitlists: waitlists.map(&:as_prop) })
   end
 
-  def hash
+  def as_prop
     {
       id: id,
       name: name,
       elapsed: elapsed.to_i,
-      track: track&.hash,
-      dj: dj&.hash,
-      waitlists: waitlists.map(&:hash)
+      track: track&.as_prop,
+      dj: dj&.as_prop,
+      waitlists: waitlists.map(&:as_prop)
     }
   end
 
@@ -53,7 +53,7 @@ class Booth < ApplicationRecord
     
     if next_list
       self.dj = next_list.user
-      self.track = self.dj.active_playlist&.playlist_tracks&.first
+      self.track = self.dj.track
       self.start_time = Time.now
       self.save
       next_list.touch # this will update "updated_at" and move it to the end of the list
