@@ -28,6 +28,7 @@ page.subscribe(function($page) {
   }
   if (!$page.props?.logged_in && subscription) {
     consumer.subscriptions.remove(subscription)
+    const store = getStore('user')
     store.set(null)
     subscription = null
   }

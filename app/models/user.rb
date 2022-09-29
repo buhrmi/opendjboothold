@@ -28,7 +28,7 @@ class User < ApplicationRecord
   end
 
   def broadcast
-    UserChannel.broadcast_to self, store: 'user', changes: hash(self)
+    UserChannel.broadcast_to self, store: 'user', changes: as_prop(self)
   end
 
   def track
