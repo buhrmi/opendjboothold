@@ -4,15 +4,15 @@ class Waitlist < ApplicationRecord
 
   default_scope { order(position: :asc).order(updated_at: :asc) }
 
-  validates :user_id, uniqueness: { scope: :booth_id }
+  validates :user_id, uniqueness: true
 
-  after_commit -> { booth.reload.broadcast_waitlists }
+  after_commit -> { booth.push waitlists: booth.reload.waitlists.map(&:pushable_data) }
   
 
-  def as_prop
+  def pushable_data
     {
       id: id,
-      user: user.as_prop
+      user: user.pushable_data
     }
   end
 end

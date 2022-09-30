@@ -6,8 +6,9 @@ class PlaylistTrack < ApplicationRecord
 
   default_scope { order(position: :asc) }
 
-  after_commit -> { playlist.broadcast }
-
-  delegate :as_prop, to: :track
+  after_commit -> { playlist.push_to user }
+    
+  delegate :user, to: :playlist
+  delegate :pushable_data, to: :track
   delegate :duration, to: :track
 end

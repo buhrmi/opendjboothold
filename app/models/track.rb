@@ -3,7 +3,7 @@ class Track < ApplicationRecord
   has_many :playlists, through: :playlist_tracks
   has_many :plays, dependent: :destroy
 
-  def as_prop
+  def pushable_data
     {
       id: id,
       title: title,

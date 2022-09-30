@@ -1,42 +1,41 @@
 <script>
+  import { page } from '@inertiajs/inertia-svelte'
   import { onDestroy, onMount } from 'svelte';
-  import consumer from '~/lib/actioncable';
+  
   import { secondsToHuman } from '~/lib/utils';
-  import getStore from '~/stores/user';
+  import {subscribe, getStore} from '~/lib/actionstore';
   import YTLoader from 'youtube-iframe'
-  export let booth
+  
   
   const user = getStore('user')
+  const booth = getStore($page.props.booth)
+  const subscription = subscribe($page.props.booth.sgid)
 
-  let elapsed = booth.elapsed
-  let startedAt = new Date().getTime() 
+  let currentTrackId = $page.props.booth.track_id
 
-  function update() {
-    elapsed = booth.elapsed + Math.round((new Date().getTime() - startedAt) / 1000)
+  let elapsed = $booth.elapsed
+  $: if ($booth.track_id != currentTrackId) {
+    currentTrackId = $booth.track_id
+    $booth.elapsed = elapsed = 0
+    startedAt = new Date().getTime()
+    ytPlayer.loadVideoById($booth.track?.service_id)
+    ytPlayer.seekTo(0)
   }
   
-  setInterval(update, 1000)
+  let startedAt = new Date().getTime() 
 
-
-  function joinWaitlist() {
-    subscription.perform('join_waitlist')
+  function elapse() {
+    elapsed = $booth.elapsed + Math.round((new Date().getTime() - startedAt) / 1000)
   }
-  function leaveWaitlist() {
-    subscription.perform('leave_waitlist')
-  }
-  function skipTrack() {
-    subscription.perform('skip_track')
-  }
-
-
-  let subscription
+  setInterval(elapse, 1000)
+ 
   let ytPlayer
   onMount(async () => {
     YTLoader.load(function(YT) {
       ytPlayer = new YT.Player('ytplayer', {
         height: '390',
         width: '640',
-        videoId: booth.track?.service_id,
+        videoId: $booth.track?.service_id,
         playerVars: {
           autoplay: 1,
           controls: 0,
@@ -51,7 +50,7 @@
           start: elapsed
         },
         events: {
-          // 'onReady': onPlayerReady,
+
           onStateChange: function(event) {
             // set player to elapsed time
             if (event.data == YT.PlayerState.PLAYING) {
@@ -63,44 +62,38 @@
         }
       });
     })
-    subscription = consumer.subscriptions.create({ channel: 'BoothChannel', id: booth.id }, {
-      received(data) {
-        if (data.action == 'update') {
-          console.log(data)
-          booth = Object.assign(booth, data.changes)
-        }
-        if (data.action == 'new_track') {
-          booth.track = data.track
-          booth.elapsed = elapsed = 0
-          startedAt = new Date().getTime()
-          ytPlayer.loadVideoById(data.track?.service_id)
-          ytPlayer.seekTo(0)
-        }
-      }
-    })
   })
 
-  onDestroy(() => {
-    consumer.subscriptions.remove(subscription)
-    subscription = null
-  })
+  function joinWaitlist() {
+    subscription.perform('join_waitlist')
+  }
+  function leaveWaitlist() {
+    subscription.perform('leave_waitlist')
+  }
+  function skipTrack() {
+    subscription.perform('skip_track')
+  }
+
+
+
+
 </script>
 
 <svelte:head>
-  <title>{booth.name} - Open DJ Booth</title>
+  <title>{$booth.name} - Open DJ Booth</title>
 </svelte:head>
 
 <header class="bg-dark flex gap-4">
   <div class="p-2">
-    {booth.name}
+    {$booth.name}
   </div>
 
-  {#if booth.track}
+  {#if $booth.track}
     <div class="p-2">
-      {booth.track.title}
+      {$booth.track.title}
     </div>
     <div class="p-2">
-      <span class="i-bi:clock relative -top-2px"></span> {secondsToHuman(booth.track.duration - elapsed)}
+      <span class="i-bi:clock relative -top-2px"></span> {secondsToHuman($booth.track.duration - elapsed)}
     </div>
   {/if}
 </header>
@@ -108,18 +101,18 @@
 <div class="flex flex-col items-center justify-center">
   <div id="ytplayer"></div>
   
-  Current DJ: {booth.dj?.display_name}
-  {#if $user && booth.dj?.id == $user.id}
+  Current DJ: {$booth.dj?.display_name}
+  {#if $user && $booth.dj?.id == $user.id}
     <button on:click={skipTrack}>Leave the booth</button>
   {/if}
   
 <h3>Waitlist</h3>
-{#each booth.waitlists as waitlist}
+{#each $booth.waitlists as waitlist}
 {waitlist.user.display_name}<br>
 {/each}
 
 {#if $user}
-  {#if booth.waitlists.find(w => w.user.id == $user.id)}
+  {#if $booth.waitlists.find(w => w.user.id == $user.id)}
    <button on:click={leaveWaitlist}>Leave Waitlist</button>
   {:else}
    <button on:click={joinWaitlist}>Join Waitlist</button>

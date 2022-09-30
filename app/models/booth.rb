@@ -1,12 +1,12 @@
 class Booth < ApplicationRecord
+  include ActionStore
+
   belongs_to :track, class_name: 'PlaylistTrack', optional: true
   belongs_to :dj, class_name: "User", optional: true
 
   has_many :waitlists, dependent: :destroy
 
   validates :name, presence: true
-
-  after_update_commit :broadcast_update
   
   def remaining
     if track
@@ -24,36 +24,37 @@ class Booth < ApplicationRecord
     !track || elapsed >= track.duration
   end
 
-  def broadcast_update
-    BoothChannel.broadcast_to(self, action: 'update', changes: previous_changes.map { |k, v| [k, v[1]] }.to_h)
-    BoothChannel.broadcast_to(self, action: 'update',  changes: {dj: dj&.as_prop}) if previous_changes[:dj_id]
-    BoothChannel.broadcast_to(self, action: 'new_track',  track: track&.as_prop) if previous_changes[:track_id]
+  # def push_update
+  #   super
+  #   BoothChannel.broadcast_to(self, action: 'update',  changes: {dj: dj&.pushable_data}) if previous_changes[:dj_id]
+  #   BoothChannel.broadcast_to(self, action: 'new_track',  track: track&.pushable_data) if previous_changes[:track_id]
+  # end
+
+  def push_waitlists
+    push waitlists: waitlists.map(&:pushable_data)
   end
 
-  def broadcast_waitlists
-    BoothChannel.broadcast_to(self, action: 'update', changes: { waitlists: waitlists.map(&:as_prop) })
-  end
-
-  def as_prop
+  def pushable_data
     {
       id: id,
+      gid: to_global_id.to_s,
+      sgid: to_sgid.to_s,
       name: name,
       elapsed: elapsed.to_i,
-      track: track&.as_prop,
-      dj: dj&.as_prop,
-      waitlists: waitlists.map(&:as_prop)
+      track: track&.pushable_data,
+      dj: dj&.pushable_data,
+      waitlists: waitlists.map(&:pushable_data)
     }
   end
 
   def next!
     reload
     next_list = waitlists.first
-    
-    self.track&.move_to_bottom
-    
+   
     if next_list
       self.dj = next_list.user
       self.track = self.dj.track
+      self.track&.move_to_bottom
       self.start_time = Time.now
       self.save
       next_list.touch # this will update "updated_at" and move it to the end of the list
@@ -65,4 +66,26 @@ class Booth < ApplicationRecord
     end
   end
   
+
+  def pushable_changes
+    changes = super
+    changes[:dj] = dj&.pushable_data if previous_changes[:dj_id]
+    changes[:track] = track&.pushable_data if previous_changes[:track_id]
+    changes
+  end
+
+  # ActionStore methods
+
+  def perform_join_waitlist user
+    waitlist = waitlists.create(user: user)
+  end
+
+  def perform_leave_waitlist user
+    waitlists.where(user: user).destroy_all
+  end
+
+  def perform_skip_track user
+    next!
+  end
+
 end

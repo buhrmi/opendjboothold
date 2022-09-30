@@ -1,28 +1,33 @@
 class Playlist < ApplicationRecord
-  
   belongs_to :user
   
   has_many :playlist_tracks, dependent: :destroy
   has_many :tracks, through: :playlist_tracks
   
   validates :name, presence: true
-
-  # TODO: split into broadcast_add, broadcast_remove, broadcast_update
-  after_commit :broadcast
-
-  after_create_commit -> { UserChannel.broadcast_to user, store: 'user', changes: {playlists: user.playlists}}
-  after_update_commit -> { UserChannel.broadcast_to user, store: 'user', changes: {playlists: user.playlists}}
-  after_destroy_commit -> { UserChannel.broadcast_to user, store: 'user', changes: {playlists: user.playlists}}
-
-  def broadcast
-    UserChannel.broadcast_to user, store: "#{self.class.name.parameterize}_#{id}", changes: hash
+  
+  after_commit do
+    user.push playlists: user.playlists.map(&:pushable_data)
+    push_to user
   end
 
-  def as_prop
+  def push_to receiver
+    receiver.push_into self, pushable_data_with_tracks
+  end
+
+  def store_id
+    to_global_id.to_s
+  end
+
+  def pushable_data_with_tracks
+    pushable_data.merge(tracks: tracks.map(&:pushable_data))
+  end
+
+  def pushable_data
     {
       id: id,
       name: name,
-      tracks: tracks.map(&:as_prop)
+      store_id: store_id
     }
   end
 

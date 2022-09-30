@@ -7,7 +7,7 @@ class BoothsController < ApplicationController
   end
 
   def show
-    @booth = Booth.find(params[:id]).as_prop
+    @booth = Booth.find(params[:id]).pushable_data
   end
 
   def create
