@@ -7,11 +7,14 @@
   import {subscribe, getStore} from '~/lib/actionstore'
 
   $: subscription = subscribe($page.props.user_sid)
+  $: user = getStore('user')
   
   // Unsubscribe when logged out
-  $: if (subscription && !$page.props.user_sid) subscription.unsubscribe()
+  $: if (subscription && !$page.props.user_sid) {
+    $user = null
+    subscription.unsubscribe()
+  }
   
-  $: user = getStore('user')
 
   let selectedPlaylist
   let showLoginWindow
