@@ -13,6 +13,10 @@ module ActionStore
     StoresChannel.broadcast_to self, store_id: ActionStore.store_id(store_id), action: 'update', changes: changes
   end
 
+  def push_event event, data = nil
+    StoresChannel.broadcast_to self, action: event, data: data
+  end
+
   def self.store_id subject
     if subject.nil?
       nil

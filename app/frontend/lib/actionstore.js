@@ -6,27 +6,41 @@ const consumer = createConsumer()
 const stores = {}
 const subscriptions = {}
 
-function getStore(storeId, initialData) {
-  if (!stores[storeId]) {
-    stores[storeId] = writable(initialData)
+function writableWithEvents(initialData) {
+  const store = writable(initialData)
+  const callbacks = {}
+  store.on = function(event, callback) {
+    callbacks[event] = callback
+    return store
   }
-  return stores[storeId]
+  store.handle = function(event, data) {
+    if (callbacks[event]) {
+      callbacks[event](data)
+    }
+    return store
+  }
+  store.on('update', function(data) {
+    store.update(function($data) {
+      return Object.assign($data || {}, data.changes)
+    })
+  })
+  return store
+}
+
+function getStore(storeId, initialData) {
+  return stores[storeId] ||= writableWithEvents(initialData)
 }
 
 export function subscribe(sgid, initial, store_id = sgid) {
   if (sgid !== store_id && subscriptions[store_id]) {
     consumer.subscriptions.remove(subscriptions[store_id])
+    subscriptions[store_id] = null
   }
   if (!sgid) return writable(null)
   const defaultStore = getStore(store_id, initial)
   const subscription = subscriptions[store_id] ||= consumer.subscriptions.create({ channel: "StoresChannel", sgid }, {
     received: function(data) {
-      const store = getStore(data.store_id || store_id)
-      if (data.action == 'update') {
-        store.update(function($data) {
-          return Object.assign($data || {}, data.changes)
-        })
-      }
+      getStore(data.store_id || store_id).handle(data.action, data)
     }
   })
   defaultStore.perform = function(action, ...args) {
