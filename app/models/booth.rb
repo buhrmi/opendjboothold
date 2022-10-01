@@ -8,6 +8,10 @@ class Booth < ApplicationRecord
 
   validates :name, presence: true
   
+  after_commit do
+    push_update serialized_changes
+  end
+
   def remaining
     if track
       track.duration - elapsed
@@ -24,15 +28,6 @@ class Booth < ApplicationRecord
     !track || elapsed >= track.duration
   end
 
-  # def push_update
-  #   super
-  #   BoothChannel.broadcast_to(self, action: 'update',  changes: {dj: dj&.pushable_data}) if previous_changes[:dj_id]
-  #   BoothChannel.broadcast_to(self, action: 'new_track',  track: track&.pushable_data) if previous_changes[:track_id]
-  # end
-
-  def push_waitlists
-    push waitlists: waitlists.map(&:pushable_data)
-  end
 
   def pushable_data
     {
@@ -41,10 +36,17 @@ class Booth < ApplicationRecord
       sgid: to_sgid.to_s,
       name: name,
       elapsed: elapsed.to_i,
-      track: track&.pushable_data,
+      track: track&.as_json,
       dj: dj&.pushable_data,
       waitlists: waitlists.map(&:pushable_data)
     }
+  end
+
+  def serialized_changes
+    changes = super
+    changes[:dj] = dj&.pushable_data if previous_changes[:dj_id]
+    changes[:track] = track&.as_json if previous_changes[:track_id]
+    changes
   end
 
   def next!
@@ -66,13 +68,6 @@ class Booth < ApplicationRecord
     end
   end
   
-
-  def pushable_changes
-    changes = super
-    changes[:dj] = dj&.pushable_data if previous_changes[:dj_id]
-    changes[:track] = track&.pushable_data if previous_changes[:track_id]
-    changes
-  end
 
   # ActionStore methods
 

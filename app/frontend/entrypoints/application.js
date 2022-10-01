@@ -27,5 +27,5 @@ createInertiaApp({
 })
 
 window.addEventListener('message', function(event) {
-  if (event.data == 'user_sid') Inertia.reload()
+  if (event.data == 'logged_in') Inertia.reload()
 })

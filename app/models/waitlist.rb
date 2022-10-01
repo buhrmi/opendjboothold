@@ -6,9 +6,8 @@ class Waitlist < ApplicationRecord
 
   validates :user_id, uniqueness: true
 
-  after_commit -> { booth.push waitlists: booth.reload.waitlists.map(&:pushable_data) }
+  after_commit -> { booth.push_update waitlists: booth.reload.waitlists.map(&:pushable_data) }
   
-
   def pushable_data
     {
       id: id,

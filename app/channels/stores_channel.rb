@@ -6,12 +6,13 @@ class StoresChannel < ApplicationCable::Channel
     @subject.subscribed self if @subject.respond_to? :subscribed
   end
 
-  def push changes
-    push_into ActionStore.store_id(@subject), changes
+  def push_update changes
+    push_update_into nil, changes
   end
 
-  def push_into store, changes
-    transmit({store: ActionStore.store_id(store), action: 'update', changes: changes})
+  def push_update_into store_id, changes
+    store_id = ActionStore.store_id(store_id)
+    transmit({store_id: store_id, action: 'update', changes: changes})
   end
   
   def perform_action data

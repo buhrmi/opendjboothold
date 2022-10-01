@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
 
   inertia_share do
     {
-      user_sid: current_user&.to_sgid_param,
+      user_sgid: current_user&.to_sgid_param,
       errors: session.delete(:errors),
       flash: flash.to_h
     }

@@ -4,17 +4,9 @@
   import { slide } from 'svelte/transition'
   import { debounce,secondsToHuman } from '~/lib/utils'
   import Window from '~/components/Window.svelte'
-  import {subscribe, getStore} from '~/lib/actionstore'
+  import {subscribe,store} from '~/lib/actionstore'
 
-  $: subscription = subscribe($page.props.user_sid)
-  $: user = getStore('user')
-  
-  // Unsubscribe when logged out
-  $: if (subscription && !$page.props.user_sid) {
-    $user = null
-    subscription.unsubscribe()
-  }
-  
+  $: user = subscribe($page.props.user_sgid, null, 'user')
 
   let selectedPlaylist
   let showLoginWindow
@@ -27,6 +19,10 @@
   
 
   async function search() {
+    if (query.length < 3) {
+      searchResults = []
+      return
+    }
     searchResults = await fetch('/api/tracks?service=youtube&q=' + query).then(res => res.json())
     selectedPlaylist = null
   }
@@ -34,7 +30,7 @@
 
   function createPlaylist() {
     const name = window.prompt('Playlist name')
-    subscription.perform('create_playlist', name)
+    user.perform('create_playlist', name)
   }
 
   function login(provider) {
@@ -47,23 +43,23 @@
   }
 
   function setActivePlaylist(playlist) {
-    subscription.perform('set_active_playlist', playlist.id)
+    user.perform('set_active_playlist', playlist.id)
   }
 
   function addToActivePlaylist(track) {
-    subscription.perform('add_to_active_playlist', track.id)
+    user.perform('add_to_active_playlist', track.id)
   }
 
   function addToPlaylist(playlist, track) {
-    subscription.perform('add_to_playlist', playlist.id, track.id)
+    user.perform('add_to_playlist', playlist.id, track.id)
   }
 
   function removeFromPlaylist(playlist, track) {
-    subscription.perform('remove_from_playlist', playlist.id, track.id)
+    user.perform('remove_from_playlist', playlist.id, track.id)
   }
 
   function moveToTop(playlist, track) {
-    subscription.perform('move_track_to_top', playlist.id, track.id)
+    user.perform('move_track_to_top', playlist.id, track.id)
   }
 
 </script>
@@ -100,7 +96,7 @@
       <div class="flex flex-col w-42">
         <div class="grow overflow-y-auto">
           {#each $user.playlists as playlist (playlist.id)}
-          <div class="px-4 py-2" on:click={() => selectedPlaylist = getStore(playlist.store_id)}>
+          <div class="px-4 py-2" on:click={() => selectedPlaylist = store(`playlist_${playlist.id}`)}>
             
             {playlist.name}
             {#if playlist.id == $user.active_playlist_id}

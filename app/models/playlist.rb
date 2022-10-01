@@ -7,28 +7,24 @@ class Playlist < ApplicationRecord
   validates :name, presence: true
   
   after_commit do
-    user.push playlists: user.playlists.map(&:pushable_data)
-    push_to user
+    user.push_update playlists: user.playlists.as_json
+    push_update
   end
 
-  def push_to receiver
-    receiver.push_into self, pushable_data_with_tracks
+  def push_update
+    user.push_update_into self, with_tracks
+  end
+
+  def with_tracks
+    {
+      id: id,
+      name: name,
+      tracks: tracks.as_json
+    }
   end
 
   def store_id
     to_global_id.to_s
-  end
-
-  def pushable_data_with_tracks
-    pushable_data.merge(tracks: tracks.map(&:pushable_data))
-  end
-
-  def pushable_data
-    {
-      id: id,
-      name: name,
-      store_id: store_id
-    }
   end
 
 end

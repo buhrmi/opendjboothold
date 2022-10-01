@@ -16,6 +16,10 @@ class User < ApplicationRecord
 
   before_create :create_default_playlist
 
+  after_commit do
+    push_update serialized_changes
+  end
+
   def track
     active_playlist.playlist_tracks.first if active_playlist
   end
@@ -31,23 +35,18 @@ class User < ApplicationRecord
       name: name,
       display_name: display_name,
       active_playlist_id: active_playlist_id,
-      playlists: receiver == self && playlists.map(&:pushable_data),
+      playlists: receiver == self && playlists.as_json,
       email: receiver == self && email,
       avatar: avatar.signed_id
     }
   end
 
-  def subscribed channel
-    channel.push pushable_data(self)
+  def subscribed subscriber
+    push_update pushable_data(self)
     playlists.each do |playlist|
-      playlist.push_to channel
+      push_update_into playlist, playlist.with_tracks
     end
   end
-
-  def store_id
-    "user"
-  end
-
   
   # ActionStore actions
   def perform_create_playlist user, name

@@ -3,13 +3,12 @@
   import { onDestroy, onMount } from 'svelte';
   
   import { secondsToHuman } from '~/lib/utils';
-  import {subscribe, getStore} from '~/lib/actionstore';
+  import {subscribe, store} from '~/lib/actionstore';
   import YTLoader from 'youtube-iframe'
   
   
-  const user = getStore('user')
-  const booth = getStore($page.props.booth)
-  const subscription = subscribe($page.props.booth.sgid)
+  const user = store('user')
+  const booth = subscribe($page.props.booth.sgid, $page.props.booth)
 
   let currentTrackId = $page.props.booth.track_id
 
@@ -65,13 +64,13 @@
   })
 
   function joinWaitlist() {
-    subscription.perform('join_waitlist')
+    booth.perform('join_waitlist')
   }
   function leaveWaitlist() {
-    subscription.perform('leave_waitlist')
+    booth.perform('leave_waitlist')
   }
   function skipTrack() {
-    subscription.perform('skip_track')
+    booth.perform('skip_track')
   }
 
 

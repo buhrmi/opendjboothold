@@ -70,13 +70,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_075313) do
     t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["playlist_id"], name: "index_playlist_tracks_on_playlist_id"
+    t.index ["track_id"], name: "index_playlist_tracks_on_track_id"
   end
 
   create_table "playlists", force: :cascade do |t|
     t.integer "user_id"
+    t.integer "position", default: 0
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_playlists_on_user_id"
   end
 
   create_table "plays", force: :cascade do |t|
@@ -88,6 +92,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_075313) do
     t.integer "mehs_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["booth_id"], name: "index_plays_on_booth_id"
+    t.index ["track_id"], name: "index_plays_on_track_id"
+    t.index ["user_id"], name: "index_plays_on_user_id"
   end
 
   create_table "tracks", force: :cascade do |t|
