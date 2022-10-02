@@ -3,7 +3,7 @@
   import { onDestroy, onMount } from 'svelte';
   
   import { secondsToHuman } from '~/lib/utils';
-  import {subscribe, store} from '~/lib/actionstore';
+  import {subscribe, store} from '@buhrmi/actionstore';
   import YTLoader from 'youtube-iframe'
   
   

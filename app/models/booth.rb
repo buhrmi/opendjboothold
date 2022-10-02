@@ -1,5 +1,5 @@
 class Booth < ApplicationRecord
-  include ActionStore
+  has_actionstore
 
   belongs_to :track, class_name: 'PlaylistTrack', optional: true
   belongs_to :dj, class_name: "User", optional: true

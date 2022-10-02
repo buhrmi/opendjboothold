@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  include ActionStore
+  has_actionstore
 
   has_secure_password
   has_one_attached :avatar

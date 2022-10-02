@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@buhrmi/actionstore": "^0.1.0",
     "@iconify/json": "^2.1.111",
     "@inertiajs/inertia": "^0.11.0",
     "@inertiajs/inertia-svelte": "^0.8.0",

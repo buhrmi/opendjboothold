@@ -4,7 +4,7 @@
   import { slide } from 'svelte/transition'
   import { debounce,secondsToHuman } from '~/lib/utils'
   import Window from '~/components/Window.svelte'
-  import {subscribe,store} from '~/lib/actionstore'
+  import {subscribe,store} from '@buhrmi/actionstore'
 
   $: user = subscribe($page.props.user_sgid, null, 'user')
 
