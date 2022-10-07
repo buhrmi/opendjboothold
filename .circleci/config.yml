@@ -1,9 +1,9 @@
-version: 2
+version: 2.1
 jobs:
   build:
     working_directory: ~/opendjbooth
     docker:
-      - image: circleci/ruby:3.0.2-node-browsers
+      - image: circleci/ruby:3.1.2-browsers
         environment:
           PGHOST: localhost
           PGUSER: postgres
@@ -17,35 +17,32 @@ jobs:
           POSTGRES_PASSWORD: postgres
     steps:
       - checkout
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
 
       # Restore Cached Dependencies
-      - type: cache-restore
-        name: Restore bundle cache
-        key: cv-{{ checksum "Gemfile.lock" }}
+      - restore_cache:
+          keys:
+            - bundler-{{ checksum "Gemfile.lock" }}
+            - npm-{{ checksum "package-lock.json" }}
 
 
       # Bundle install dependencies
       - run: bundle install --path vendor/bundle
       
       # Cache Dependencies
-      - type: cache-save
-        name: Store bundle cache
-        key: cv-{{ checksum "Gemfile.lock" }}
-        paths:
-          - vendor/bundle
+      - save_cache:
+          paths:
+            - vendor/bundle
+          key: bundler-{{ checksum "Gemfile.lock" }}
 
-      - type: cache-restore
-        name: Restore npm cache
-        key: cv-{{ checksum "package-lock.json" }}
-
-      - run: npm install --immutable
+      - run: npm install
 
         # Cache Dependencies
-      - type: cache-save
-        name: Store npm cache
-        key: cv-{{ checksum "package-lock.json" }}
-        paths:
-          - ~/.cache/npm
+      - save_cache:
+          paths:
+            - ~/.cache/npm
+          key: npm-{{ checksum "package-lock.json" }}
 
       # Wait for DB
       - run: dockerize -wait tcp://localhost:5432 -timeout 1m
