@@ -41,35 +41,35 @@ class User < ApplicationRecord
     }
   end
 
-  def subscribed subscriber
-    push_update pushable_data(self)
+  def subscribed channel
+    channel.push_update pushable_data(self)
     playlists.each do |playlist|
-      push_update_into playlist, playlist.with_tracks
+      channel.push_update_into playlist, playlist.with_tracks
     end
   end
   
   # ActionStore actions
-  def perform_create_playlist user, name
+  def perform_create_playlist channel, name
     playlists.create!(name: name)
   end
 
-  def perform_delete_playlist user, id
+  def perform_delete_playlist channel, id
     playlists.find(id).destroy
   end
 
-  def perform_add_to_active_playlist user, id
+  def perform_add_to_active_playlist channel, id
     active_playlist.tracks << Track.find(id)
   end
 
-  def perform_set_active_playlist user, id
+  def perform_set_active_playlist channel, id
     update! active_playlist: playlists.find_by(id: id)
   end
 
-  def perform_remove_from_playlist user, playlist_id, track_id
+  def perform_remove_from_playlist channel, playlist_id, track_id
     playlists.find(playlist_id).playlist_tracks.where(track_id: track_id).destroy_all
   end
 
-  def perform_move_track_to_top user, playlist_id, track_id
+  def perform_move_track_to_top channel, playlist_id, track_id
     playlists.find(playlist_id).playlist_tracks.where(track_id: track_id).first.move_to_top
   end
 

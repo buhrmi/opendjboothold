@@ -71,15 +71,15 @@ class Booth < ApplicationRecord
 
   # ActionStore methods
 
-  def perform_join_waitlist user
-    waitlist = waitlists.create(user: user)
+  def perform_join_waitlist channel
+    waitlist = waitlists.create(user: channel.current_user)
   end
 
-  def perform_leave_waitlist user
-    waitlists.where(user: user).destroy_all
+  def perform_leave_waitlist channel
+    waitlists.where(user: channel.current_user).destroy_all
   end
 
-  def perform_skip_track user
+  def perform_skip_track channel
     next!
   end
 
